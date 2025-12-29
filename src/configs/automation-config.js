@@ -3,7 +3,7 @@ import { automationRules } from "../rules/automation.js";
 
 export default [
 	{
-		files: ["test/**/*.{js,jsx}", "tests/**/*.{js,jsx}"],
+		files: ["test/**/*.{js,jsx,mjs,cjs}", "tests/**/*.{js,jsx,mjs,cjs}"],
 		ignores: ["**/node_modules/*", "**/dist/*", "**/build/*"],
 		plugins: {
 			testcafePlugin: testcafePlugin,

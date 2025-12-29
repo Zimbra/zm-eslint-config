@@ -20,7 +20,6 @@ import {
 	i18nTextComponents,
 } from "../rules/i18n.js";
 import prettierRules from "../rules/prettier.js";
-import customGlobals from "../rules/globals.js";
 import parserConfig from "../rules/parser.js";
 
 const coreRules = {
@@ -41,7 +40,7 @@ const languageFilesAbsolute = LANGUAGE_FILES_RELATIVE.map((entry) => ({
 
 export default [
 	{
-		files: ["**/*.{js,jsx}"],
+		files: ["**/*.{js,jsx,mjs,cjs}"],
 
 		ignores: [
 			"**/node_modules/*",
@@ -55,8 +54,7 @@ export default [
 			...parserConfig,
 			globals: {
 				...globals.browser,
-				...globals.node,
-				...customGlobals
+				...globals.node
 			}
 		},
 
