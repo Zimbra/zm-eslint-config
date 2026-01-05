@@ -1,4 +1,3 @@
-// import fs from 'fs';
 import pluginPrettier from "eslint-plugin-prettier";
 import tsParser from "@typescript-eslint/parser";
 import pluginTypescript from "@typescript-eslint/eslint-plugin";
