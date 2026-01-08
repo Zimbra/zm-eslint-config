@@ -1,39 +1,44 @@
 export default {
 	meta: {
-		type: "problem",
+		type: 'problem',
 		docs: {
 			description:
-				"Disallow direct import of es-toolkit/compat/memoize; use createLRUMemoize",
+				'Disallow direct import of es-toolkit/compat/memoize or es-toolkit/memoize; use createLRUMemoize',
 			recommended: true
 		},
 		fixable: null,
 		messages: {
 			useCreateLRU:
-				"Do not import 'es-toolkit/compat/memoize' directly. Use 'createLRUMemoize' instead."
+				"Do not import es-toolkit/compat/memoize or es-toolkit/memoize; directly. Use 'createLRUMemoize' instead."
 		},
 		schema: []
 	},
 
 	create(context) {
+		// List of disallowed modules
+		const disallowedModules = ['es-toolkit/compat/memoize', 'es-toolkit/memoize'];
+
 		return {
 			ImportDeclaration(node) {
-				if (node.source.value === "es-toolkit/compat/memoize") {
+				if (disallowedModules.includes(node.source.value)) {
 					context.report({
 						node,
-						messageId: "useCreateLRU"
+						messageId: 'useCreateLRU',
+						data: { module: node.source.value }
 					});
 				}
 			},
 
 			CallExpression(node) {
 				if (
-					node.callee.name === "require" &&
+					node.callee.name === 'require' &&
 					node.arguments[0] &&
-					node.arguments[0].value === "es-toolkit/compat/memoize"
+					disallowedModules.includes(node.arguments[0].value)
 				) {
 					context.report({
 						node,
-						messageId: "useCreateLRU"
+						messageId: 'useCreateLRU',
+						data: { module: node.arguments[0].value }
 					});
 				}
 			}

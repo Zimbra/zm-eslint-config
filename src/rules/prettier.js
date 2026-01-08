@@ -1,11 +1,11 @@
 export default {
-	"prettier/prettier": [
-		"error",
+	'prettier/prettier': [
+		'error',
 		{
 			singleQuote: true,
 			printWidth: 100,
-			trailingComma: "none",
-			arrowParens: "avoid"
+			trailingComma: 'none',
+			arrowParens: 'avoid'
 		}
 	]
 };

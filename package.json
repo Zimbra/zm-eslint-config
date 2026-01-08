@@ -1,16 +1,16 @@
 {
-  "name": "eslint-config-zimbra",
-  "version": "1.0.0",
+  "name": "@zimbra/eslint-config",
+  "version": "0.0.1",
   "type": "module",
-  "description": "ESLint configuration for Zimbra javascript projects (Flat Config)",
+  "description": "ESLint configuration for Zimbra javascript projects.",
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
     "./typescript": "./src/typescript.js"
   },
   "scripts": {
-    "test": "npm run lint",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@eslint/compat": "^1.0.0",
