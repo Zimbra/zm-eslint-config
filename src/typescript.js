@@ -1,3 +1,3 @@
-import tsEslintConfig from "./configs/ts-eslint-config.js"
+import tsEslintConfig from './configs/ts-eslint-config.js';
 
 export { tsEslintConfig };
