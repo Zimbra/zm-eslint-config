@@ -10,7 +10,8 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepublishOnly": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags"
   },
   "dependencies": {
     "@eslint/compat": "^1.0.0",

@@ -1,5 +1,208 @@
 # RULES
 
+This file is generated from `src/rules/` and `src/rules/custom-rules/`. It lists the rule modules and explains, in simple language, what each rule or setting does. Keep this file up to date when rules change.
+
+---
+
+## **src/rules/automation.js**
+
+Purpose: Rules for automation scripts (CI, build tools, scripts). These relax some checks that are noisy or unnecessary in short scripts.
+
+Rules and what they do:
+
+- `prettier/prettier`: off — do not run Prettier formatting checks in automation blocks.
+- `prefer-const`: off — allow `let` even when a variable could be `const` (useful in scripting patterns).
+- `require-atomic-updates`: off — do not warn about certain async update race conditions.
+- `guard-for-in`: off — do not require `hasOwnProperty` checks in `for..in` loops.
+- `react/jsx-no-useless-fragment`: off — allow fragments even if they look redundant.
+- `lines-around-comment`: off — disable rules enforcing blank lines around comments.
+- `no-unexpected-multiline`: off — do not warn for some ambiguous multi-line expressions.
+- `no-spaced-func`: off — allow `function` call spacing (compatibility choice).
+- `new-cap`: off — do not require constructor names to be capitalized.
+- `no-undef-init`: off — allow `var x = undefined` style patterns.
+- `no-shadow`: off — allow variable shadowing in automation scripts.
+- `no-case-declarations`: off — allow declarations inside `switch` cases.
+- `no-constant-binary-expression`: off — do not warn for constant expressions in binary operators.
+- `semi`: ["error", "always"] — require semicolons at the end of statements.
+
+Source: `src/rules/automation.js`
+
+---
+
+## **src/rules/i18n.js**
+
+Purpose: Checks for localization (i18n) JSON files and i18n usage in templates.
+
+Rules and what they do:
+
+- `i18n-json/sorted-keys` — enforces a stable, custom key order in locale JSON files (uses `scripts/intl/lint-custom-sort.cjs`). This keeps translations sorted in a consistent order.
+- `i18n-json/identical-keys` — ensures locale files have the same keys as the primary language file (defaults to `src/intl/en_US.json`).
+- `preact-i18n/no-missing-template-field` — reports when a template expects a field that's not provided.
+- `preact-i18n/no-text-as-attribute` — prevents raw text used directly in attributes instead of using translations.
+- `preact-i18n/no-text-as-children` — prevents raw text as children in i18n-aware components (ignores small punctuation-only strings).
+- `preact-i18n/no-unknown-key` — reports when a translation key used in code is not found in the locale files.
+
+Notes:
+- Use `ESLINT_INTL_PATH` environment variable to change where locale files are read from.
+
+Source: `src/rules/i18n.js`
+
+---
+
+## **src/rules/import.js**
+
+Purpose: Small adjustments for import-related checks.
+
+Rules and what they do:
+
+- `import/no-unresolved`: off — do not treat unresolved imports as errors (useful when bundlers or custom resolvers are in use).
+- `import/no-named-as-default`: off — allow using a named export as default in some patterns.
+
+Source: `src/rules/import.js`
+
+---
+
+## **src/rules/parser.js**
+
+Purpose: Central parser configuration used for TypeScript-enabled linting blocks.
+
+What it sets:
+
+- `parser`: `@typescript-eslint/parser` — enables TypeScript-aware parsing.
+- `sourceType`: `module` — treat files as ES modules.
+- `ecmaVersion`: `latest` — allow modern JavaScript syntax.
+- `parserOptions.requireConfigFile`: false — parser won't require a tsconfig for basic parsing.
+- `parserOptions.ecmaFeatures.jsx`: true — enable JSX parsing.
+
+Use this parser settings block when enabling TypeScript rules or type-aware checks.
+
+Source: `src/rules/parser.js`
+
+---
+
+## **src/rules/prettier.js**
+
+Purpose: Configure Prettier options surfaced through ESLint.
+
+Rule and options:
+
+- `prettier/prettier`: `error` — formatting issues are reported as ESLint errors. Options set:
+  - `singleQuote: true` — prefer single quotes.
+  - `printWidth: 100` — wrap lines at 100 characters.
+  - `trailingComma: 'none'` — do not add trailing commas.
+  - `arrowParens: 'avoid'` — omit parentheses for single-arg arrow functions where possible.
+
+Note: Consumer projects should install `prettier` to get fixes via `eslint --fix`.
+
+Source: `src/rules/prettier.js`
+
+---
+
+## **src/rules/react-hooks.js**
+
+Purpose: Adjust React Hooks plugin rules for Zimbra code style.
+
+Rules and what they do:
+
+- `react-hooks/refs`: off — disables the `refs` rule from the react-hooks plugin.
+- `react-hooks/immutability`: off — disables immutability checks for hooks-related code.
+
+These are turned off to avoid false positives or to match our patterns across codebases.
+
+Source: `src/rules/react-hooks.js`
+
+---
+
+## **src/rules/react.js**
+
+Purpose: React-specific rule adjustments for modern code (often TypeScript-based).
+
+Rules and what they do:
+
+- `react/prop-types`: off — do not require PropTypes (TypeScript or other systems handle type checks).
+- `react/no-unknown-property`: off — allow some non-standard attributes (project-specific usage).
+- `react/react-in-jsx-scope`: off — no longer required with newer JSX transforms.
+- `react/jsx-key`: off — JSX key warnings are disabled (teams may use different patterns).
+
+Source: `src/rules/react.js`
+
+---
+
+## **src/rules/style.js**
+
+Purpose: Style and code-shape rules that affect common JavaScript patterns.
+
+Rules and what they do:
+
+- `no-undef`: off — do not report undefined variables here (TypeScript or other checks may handle this).
+- `no-unsafe-optional-chaining`: off — allow some optional chaining patterns that would otherwise be flagged.
+- `no-empty`: off — allow empty blocks in some cases.
+- `no-empty-pattern`: off — allow empty destructuring patterns.
+- `no-unused-vars`: `['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true, caughtErrors: 'none' }]` — report unused variables, but ignore some common patterns (e.g., rest siblings).
+
+Source: `src/rules/style.js`
+
+---
+
+## **src/rules/typescript.js**
+
+Purpose: Turn off some `@typescript-eslint` rules that are noisy by default across many projects.
+
+Rules and what they do:
+
+- `@typescript-eslint/no-explicit-any`: off — allow `any` types in code without lint errors.
+- `@typescript-eslint/no-empty-object-type`: off — allow `{} as type` patterns.
+- `@typescript-eslint/no-unused-expressions`: off — allow certain unused expressions.
+- `@typescript-eslint/no-unsafe-function-type`: off — do not error on some unsafe function types.
+- `@typescript-eslint/no-unused-vars`: off — TypeScript-based unused-var handling may be preferred or tightened per-project.
+
+Note: Projects that want stricter TypeScript rules should override these settings in their local config.
+
+Source: `src/rules/typescript.js`
+
+---
+
+## **src/rules/custom-rules/custom-rules.js**
+
+Purpose: Enables custom (project-specific) rules located in `src/rules/custom-rules/`.
+
+Key setting:
+
+- `custom/no-direct-memoize`: `error` — enable the rule that blocks direct memoize imports.
+
+Source: `src/rules/custom-rules/custom-rules.js`
+
+---
+
+## **src/rules/custom-rules/no-direct-memoize.js**
+
+Purpose: A custom rule that prevents importing certain memoize helpers directly.
+
+What it enforces:
+
+- Disallows imports of `es-toolkit/compat/memoize` and `es-toolkit/memoize`.
+- Reports an error and recommends using `createLRUMemoize` instead.
+
+Why: Centralizes use of a specific memoize implementation (LRU-based) and avoids inconsistent memoization helpers.
+
+Example that triggers the rule:
+
+```js
+import memoize from 'es-toolkit/memoize'; // ❌ triggers rule
+const x = memoize(fn);
+```
+
+Example that follows the rule:
+
+```js
+import { createLRUMemoize } from 'some-lru-helper'; // ✅ allowed
+const memo = createLRUMemoize(...);
+```
+
+Source: `src/rules/custom-rules/no-direct-memoize.js`
+
+# RULES
+
 This file was generated automatically from the source files under `src/rules/` and `src/rules/custom-rules/`. It summarizes the purpose and key settings for each rule/config module exported by the package. If you change rules in `src/rules`, regenerate this file or update it manually.
 
 ---
