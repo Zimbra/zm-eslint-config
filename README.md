@@ -24,7 +24,7 @@ This package bundles a set of shareable ESLint configs and rule customizations s
 
 This package provides:
 
-- **A base ESLint config** (default export) customized or adapted specifically for Zimbra projects for Zimbra projects.
+- **A base ESLint config** (default export) customized or adapted specifically for Zimbra projects.
 - **A TypeScript-focused config** (exported at `./src/typescript.js`).
 - **Curated configs** in `src/configs/` for special cases (automation, core-js, locale JSON, etc.).
 - **Rule definitions and small custom plugins** under `src/rules/`, including `custom-rules` used internally.
@@ -32,7 +32,7 @@ This package provides:
 ## **Quick start**
 
 1. Install the package as a dev dependency in your project.
-2. Install `eslint` (peer dependency) and any language-specific plugins you need (TypeScript, React, etc.).
+2. Install `eslint` (peer dependency).
 3. Extend `@zimbra/eslint-config` in your ESLint configuration.
 
 ## **Installation**
@@ -46,7 +46,7 @@ npm install --save-dev @zimbra/eslint-config eslint
 If you're using TypeScript:
 
 ```bash
-npm install --save-dev @zimbra/eslint-config eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin typescript
+npm install --save-dev @zimbra/eslint-config eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 ```
 
 ### **Note about consumer installation**
@@ -149,27 +149,9 @@ Notes:
 - `./typescript` -> `src/typescript.js` (TypeScript-focused config)
 - Additional configs are in `src/configs/` (automation, core-js, custom, locale-json, ts-eslint-config)
 
-## **Rule summary**
+## **Rules and custom rules**
 
-The package composes multiple rule sets and customizations. Below is a concise summary of the available rule modules (see `src/rules/` for the authoritative source):
-
-- `automation.js` — Rules and config to support CI/automation scripts and environments (targets non-interactive runs and automation-specific globals).
-- `i18n.js` — Rules around internationalization, string extraction and locale file usage; integrates `eslint-plugin-i18n-json` and related checks.
-- `import.js` — `eslint-plugin-import` related rules and import ordering/consistency checks.
-- `parser.js` — Parser options and settings (ECMAScript version, module type, sourceType, etc.).
-- `prettier.js` — Integrations to turn off conflicting ESLint rules and rely on Prettier for formatting.
-- `react.js` — React-specific best-practice rules using `eslint-plugin-react`.
-- `react-hooks.js` — Rules for React Hooks (uses `eslint-plugin-react-hooks`).
-- `style.js` — Styling and code-shape rules (naming, spacing, and other style-focused checks).
-- `typescript.js` — TypeScript-specific rules using `@typescript-eslint` plugin when available.
-- `custom-rules/custom-rules.js` — Small, repository-specific custom rules or rule overrides.
-- `custom-rules/no-direct-memoize.js` — Example custom rule to discourage use of direct memoization in certain patterns (see file for exact logic).
-
-## **Custom rules**
-
-Custom rules live under `src/rules/custom-rules/`. They are designed to enforce Zimbra-specific patterns not available in community plugins. If you change or add custom rules, include tests and a changelog entry explaining the rationale.
-
-For a detailed, extracted summary of each rule file (auto-generated), see `RULES.md` in the repository root.
+Rule details and descriptions have moved to `RULES.md`. That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. See `RULES.md` in the repo root for the authoritative list and examples.
 
 ## **Scripts**
 
