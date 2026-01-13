@@ -10,6 +10,7 @@ const CUSTOM_SORT_PATH = path.join(__dirname, '../../scripts/intl/lint-custom-so
 
 // i18n-json rules
 export const i18nJsonRules = {
+	'i18n-json/valid-message-syntax': ['error', { syntax: 'non-empty-string' }],
 	'i18n-json/sorted-keys': [
 		'error',
 		{

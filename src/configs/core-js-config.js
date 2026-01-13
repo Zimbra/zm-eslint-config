@@ -14,6 +14,7 @@ import importPlugin from 'eslint-plugin-import';
 import styleRules from '../rules/style.js';
 import reactRules from '../rules/react.js';
 import reactHooksRules from '../rules/react-hooks.js';
+import securityRules from '../rules/security.js';
 import importRules from '../rules/import.js';
 import { i18nRules, LANGUAGE_FILES_RELATIVE, i18nTextComponents } from '../rules/i18n.js';
 import prettierRules from '../rules/prettier.js';
@@ -25,6 +26,7 @@ const coreRules = {
 	...reactHooksRules,
 	...importRules,
 	...prettierRules,
+	...securityRules,
 	...i18nRules
 };
 
@@ -69,7 +71,8 @@ export default [
 		},
 
 		settings: {
-			react: { pragma: 'createElement', version: '16.3' },
+			// Requires exactly version 16.0. See: https://github.com/jsx-eslint/eslint-plugin-react/issues/1754
+			react: { pragma: 'createElement', version: '16.0' },
 			'preact-i18n': {
 				languageFiles: languageFilesAbsolute,
 				textComponents: i18nTextComponents
