@@ -16,6 +16,7 @@
   "dependencies": {
     "@eslint/compat": "^1.0.0",
     "@eslint/js": "^9.37.0",
+    "@typescript-eslint/parser": "^8.48.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-i18n-json": "^4.0.1",
     "eslint-plugin-import": "^2.32.0",
@@ -25,10 +26,9 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-testcafe": "^0.2.1",
-    "typescript": "^5.9.3",
-    "@typescript-eslint/parser": "^8.48.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.6.2"
+    "globals": "^17.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "eslint": "^9.37.0",
