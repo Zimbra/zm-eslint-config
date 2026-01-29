@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
-    "prepublishOnly": "npm run lint && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags"
+    "prepublishOnly": "npm run lint && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags",
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@eslint/compat": "^1.0.0",
@@ -40,7 +41,8 @@
     }
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
     "eslint": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.50.1"
+    "husky": "^9.1.7"
   }
 }
