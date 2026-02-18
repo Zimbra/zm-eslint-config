@@ -26,7 +26,12 @@ This package provides:
 
 - **A base ESLint config** (default export) customized or adapted specifically for Zimbra projects.
 - **A TypeScript-focused config** (exported at `./src/typescript.js`).
-- **Curated configs** in `src/configs/` for special cases (automation, core-js, locale JSON, etc.).
+- **Curated configs** in `src/configs/` for special cases:
+  - `automation-config` — for automation, build, and test scripts (includes testcafe rules, import checks, and relaxed automation rules).
+  - `core-js-config` — for core JavaScript files with React and security checks.
+  - `locale-json-config` — for JSON locale files with i18n validation.
+  - `ts-eslint-config` — for TypeScript files.
+  - `custom-config` — for custom rule applications.
 - **Rule definitions and small custom plugins** under `src/rules/`, including `custom-rules` used internally.
 
 ## **Quick start**
@@ -147,11 +152,24 @@ Notes:
 
 - `.` -> `src/index.js` (base config)
 - `./typescript` -> `src/typescript.js` (TypeScript-focused config)
-- Additional configs are in `src/configs/` (automation, core-js, custom, locale-json, ts-eslint-config)
+- Named exports from `src/index.js`:
+  - `coreJsConfig` — base JavaScript/React config for core application files
+  - `automationConfig` — relaxed rules for test scripts, build tools, and automation
+  - `customConfig` — enables Zimbra custom rules (e.g., `no-direct-memoize`)
+  - `localeJsonConfig` — i18n JSON file validation
+  - `tsEslintConfig` — TypeScript-specific rule overrides
 
 ## **Rules and custom rules**
 
 Rule details and descriptions have moved to `RULES.md`. That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. See `RULES.md` in the repo root for the authoritative list and examples.
+
+### **Automation rules**
+
+The `automation-config` includes relaxed rules for test scripts, build tools, and CI automation. Key rules disabled or adjusted include:
+- `no-unexpected-multiline`, `no-case-declarations`, `guard-for-in` — relaxed for scripting patterns.
+- `prefer-const`, `new-cap` — more lenient in automation contexts.
+
+This config also includes import checks, testcafe support, and browser/node globals for full automation script support.
 
 ## **Scripts**
 

@@ -1,7 +1,7 @@
+import path from 'node:path';
+import globals from 'globals';
 import eslint from '@eslint/js';
 import { fixupPluginRules } from '@eslint/compat';
-import globals from 'globals';
-import path from 'path';
 
 import prettierConfig from 'eslint-config-prettier';
 import pluginPrettier from 'eslint-plugin-prettier';
@@ -73,6 +73,7 @@ export default [
 		settings: {
 			// Requires exactly version 16.0. See: https://github.com/jsx-eslint/eslint-plugin-react/issues/1754
 			react: { pragma: 'createElement', version: '16.0' },
+			'import/node-version': '18.20.0',
 			'preact-i18n': {
 				languageFiles: languageFilesAbsolute,
 				textComponents: i18nTextComponents

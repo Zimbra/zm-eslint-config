@@ -10,19 +10,8 @@ Purpose: Rules for automation scripts (CI, build tools, scripts). These relax so
 
 Rules and what they do:
 
-- `prettier/prettier`: off — do not run Prettier formatting checks in automation blocks.
 - `prefer-const`: off — allow `let` even when a variable could be `const` (useful in scripting patterns).
-- `require-atomic-updates`: off — do not warn about certain async update race conditions.
-- `guard-for-in`: off — do not require `hasOwnProperty` checks in `for..in` loops.
-- `react/jsx-no-useless-fragment`: off — allow fragments even if they look redundant.
-- `lines-around-comment`: off — disable rules enforcing blank lines around comments.
-- `no-unexpected-multiline`: off — do not warn for some ambiguous multi-line expressions.
-- `no-spaced-func`: off — allow `function` call spacing (compatibility choice).
 - `new-cap`: off — do not require constructor names to be capitalized.
-- `no-undef-init`: off — allow `var x = undefined` style patterns.
-- `no-shadow`: off — allow variable shadowing in automation scripts.
-- `no-case-declarations`: off — allow declarations inside `switch` cases.
-- `no-constant-binary-expression`: off — do not warn for constant expressions in binary operators.
 - `semi`: ["error", "always"] — require semicolons at the end of statements.
 
 Source: `src/rules/automation.js`
@@ -51,12 +40,20 @@ Source: `src/rules/i18n.js`
 
 ## **src/rules/import.js**
 
-Purpose: Small adjustments for import-related checks.
+Purpose: Adjustments for import-related checks to reduce noise and allow flexibility in import patterns.
 
 Rules and what they do:
 
 - `import/no-unresolved`: off — do not treat unresolved imports as errors (useful when bundlers or custom resolvers are in use).
 - `import/no-named-as-default`: off — allow using a named export as default in some patterns.
+- `import/extensions`: off — allow imports with or without file extensions.
+- `import/newline-after-import`: off — do not require a newline after import statements.
+- `import/order`: off — do not enforce import order rules (enable per-project if desired).
+- `import/no-extraneous-dependencies`: off — allow imports of external dependencies that may not be listed in package.json.
+- `import/enforce-node-protocol-usage`: off — do not require `node:` protocol for Node.js built-ins.
+
+Notes:
+- These rules are disabled by default but can be enabled per-project once the codebase is updated to follow best practices.
 
 Source: `src/rules/import.js`
 
@@ -213,10 +210,8 @@ Purpose: Relax or adjust linting rules for automation and CI scripts. The automa
 
 Key settings (excerpt):
 
-- `prettier/prettier`: off
 - `prefer-const`: off
-- `require-atomic-updates`: off
-- `guard-for-in`: off
+- `new-cap`: off
 - `semi`: ["error", "always"]
 
 Use when: applying lint rules to scripts used in CI, build tooling, or non-interactive environments where stricter runtime style checks may be unnecessary.
@@ -247,12 +242,17 @@ Source: `src/rules/i18n.js`
 
 ## **src/rules/import.js**
 
-Purpose: Minimal adjustments for `eslint-plugin-import` rules in this config.
+Purpose: Adjustments for import-related checks to reduce noise and allow flexibility in import patterns.
 
 Key settings (excerpt):
 
 - `import/no-unresolved`: off
 - `import/no-named-as-default`: off
+- `import/extensions`: off
+- `import/newline-after-import`: off
+- `import/order`: off
+- `import/no-extraneous-dependencies`: off
+- `import/enforce-node-protocol-usage`: off
 
 Source: `src/rules/import.js`
 
