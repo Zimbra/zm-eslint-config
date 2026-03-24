@@ -4,7 +4,7 @@ import { i18nJsonRules } from '../rules/i18n.js';
 export default [
 	{
 		files: ['**/*.json'],
-		ignores: ['**/node_modules/*', '**/dist/*', '**/build/*'],
+		ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
 		plugins: {
 			'i18n-json': pluginI18nJson
 		},

@@ -20,6 +20,9 @@ import { i18nRules, LANGUAGE_FILES_RELATIVE, i18nTextComponents } from '../rules
 import prettierRules from '../rules/prettier.js';
 import parserConfig from '../rules/parser.js';
 
+const intlPath = process.env.ESLINT_INTL_PATH ?? 'src/intl';
+const disableIntl = process.env.ESLINT_DISABLE_INTL === 'true';
+
 const coreRules = {
 	...styleRules,
 	...reactRules,
@@ -27,10 +30,8 @@ const coreRules = {
 	...importRules,
 	...prettierRules,
 	...securityRules,
-	...i18nRules
+	...(disableIntl ? {} : i18nRules)
 };
-
-const intlPath = process.env.ESLINT_INTL_PATH ?? 'src/intl';
 
 const languageFilesAbsolute = LANGUAGE_FILES_RELATIVE.map(entry => ({
 	name: entry.name,
@@ -41,7 +42,7 @@ export default [
 	{
 		files: ['**/*.{js,jsx,mjs,cjs}'],
 
-		ignores: ['**/node_modules/*', '**/dist/*', '**/build/*', '**/*.graphql', '**/*.gql'],
+		ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/*.graphql', '**/*.gql'],
 
 		languageOptions: {
 			...parserConfig,
@@ -57,8 +58,12 @@ export default [
 			mocha: fixupPluginRules(pluginMocha),
 			prettier: pluginPrettier,
 			import: importPlugin,
-			// TODO: Upgrade `pluginPreactI18n` to a modern version to ensure compatibility with current tooling and React/Preact best practices
-			'preact-i18n': fixupPluginRules(pluginPreactI18n)
+			...(disableIntl
+				? {}
+				: {
+						// TODO: Upgrade `pluginPreactI18n` to a modern version to ensure compatibility with current tooling and React/Preact best practices
+						'preact-i18n': fixupPluginRules(pluginPreactI18n)
+					})
 		},
 
 		rules: {
@@ -73,10 +78,14 @@ export default [
 		settings: {
 			// Requires exactly version 16.0. See: https://github.com/jsx-eslint/eslint-plugin-react/issues/1754
 			react: { pragma: 'createElement', version: '16.0' },
-			'preact-i18n': {
-				languageFiles: languageFilesAbsolute,
-				textComponents: i18nTextComponents
-			}
+			...(disableIntl
+				? {}
+				: {
+						'preact-i18n': {
+							languageFiles: languageFilesAbsolute,
+							textComponents: i18nTextComponents
+						}
+					})
 		}
 	}
 ];
