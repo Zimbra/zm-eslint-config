@@ -4,7 +4,7 @@ import noDirectMemoize from '../rules/custom-rules/no-direct-memoize.js';
 export default [
 	{
 		files: ['**/*.{js,jsx,mjs,cjs}'],
-		ignores: ['**/node_modules/*', '**/dist/*', '**/build/*'],
+		ignores: ['**/node_modules/**', '**/dist/**', '**/build/**'],
 		plugins: {
 			custom: {
 				rules: {
