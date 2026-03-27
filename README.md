@@ -9,11 +9,13 @@ This package bundles a set of shareable ESLint configs and rule customizations s
 - [Overview](#overview)
 - [Quick start](#quick-start)
 - [Installation](#installation)
+- [Prettier integration (important)](#prettier-integration-important)
+- [When should I integrate this?](#when-should-i-integrate-this)
+- [What problem will it resolve?](#what-problem-will-it-resolve)
 - [Usage examples](#usage-examples)
 - [ESLint Flat Config example (eslint.config.mjs)](#eslint-flat-config-example-eslintconfigmjs)
 - [Exports & configs](#exports--configs)
-- [Rule summary](#rule-summary)
-- [Custom rules](#custom-rules)
+- [Architecture & rule organization](#architecture--rule-organization)
 - [Scripts](#scripts)
 - [Publishing](#publishing)
 - [Contributing](#contributing)
@@ -101,21 +103,39 @@ Adopting this config helps maintain code quality, reduces time spent configuring
 
 ## **ESLint Flat Config example (eslint.config.mjs)**
 
-If your project uses ESLint v9+ with the Flat Config (`eslint.config.mjs` / `eslint.config.cjs`), import the named config blocks exported by this package and spread them into your exported array. Example JS project:
+If your project uses ESLint v9+ with the Flat Config (`eslint.config.mjs` / `eslint.config.cjs`), import the named config blocks exported by this package and add them to your exported array. Example JS project:
 
 ```js
 // eslint.config.mjs
 import { coreJsConfig, customConfig } from "@zimbra/eslint-config";
 
 export default [
-  ...coreJsConfig,
-  ...customConfig,
+  coreJsConfig,
+  customConfig,
   // Add local overrides or additional blocks here
   {
     files: ["**/*.js", "**/*.jsx"],
     rules: {
       // local rule overrides
     }
+  }
+];
+```
+
+Example React project with i18n support:
+
+```js
+// eslint.config.mjs
+import { coreJsConfig, customConfig, reactConfig, preactI18nConfig } from "@zimbra/eslint-config";
+
+export default [
+  coreJsConfig,
+  customConfig,
+  reactConfig,
+  preactI18nConfig,
+  {
+    files: ["**/*.jsx"],
+    // local React overrides (if needed)
   }
 ];
 ```
@@ -128,8 +148,8 @@ import { coreJsConfig } from "@zimbra/eslint-config";
 import typescriptConfig from "@zimbra/eslint-config/typescript";
 
 export default [
-  ...coreJsConfig,
-  ...typescriptConfig,
+  coreJsConfig,
+  typescriptConfig,
   {
     files: ["**/*.ts", "**/*.tsx"],
     // local TypeScript overrides (if needed)
@@ -141,17 +161,40 @@ Notes:
 
 - Ensure your project has `type: "module"` in `package.json` or use the `.mjs` extension for the config file so Node treats it as ESM.
 - Install peer dependencies (`eslint`, `@typescript-eslint/*`, `prettier`) in the consumer project as described in the Installation section.
-- The exported config blocks (`coreJsConfig`, `customConfig`, etc.) are arrays of config blocks — spreading them preserves ordering and allows local blocks to appear before/after as desired.
+- The exported config blocks (`coreJsConfig`, `customConfig`, etc.) are objects that represent a single ESLint config block — add them directly to your config array without spreading.
 
 ## **Exports & configs**
 
-- `.` -> `src/index.js` (base config)
-- `./typescript` -> `src/typescript.js` (TypeScript-focused config)
-- Additional configs are in `src/configs/` (automation, core-js, custom, locale-json, ts-eslint-config)
+### Main exports from `src/index.js`
 
-## **Rules and custom rules**
+- **`coreJsConfig`** — Base JavaScript config with ESLint recommended rules, import rules, security, and style rules.
+- **`customConfig`** — Custom Zimbra rules (includes `no-direct-memoize` and other custom patterns).
+- **`reactConfig`** — React and React Hooks rules (includes plugin setup and recommended rules).
+- **`preactI18nConfig`** — Preact i18n rules and configuration (requires `ESLINT_INTL_PATH` environment variable or defaults to `src/intl`).
+- **`prettierConfig`** — Prettier integration (formatting rules and conflict resolution).
+- **`automationConfig`** — Automation/TestCafe rules for test files.
+- **`localeJsonConfig`** — i18n JSON validation rules.
 
-Rule details and descriptions have moved to `RULES.md`. That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. See `RULES.md` in the repo root for the authoritative list and examples.
+### Additional exports
+
+- `./typescript` -> `src/typescript.js` (TypeScript-focused config — exports `tsEslintConfig`)
+
+## **Architecture & rule organization**
+
+The package follows a modular structure:
+
+- **`src/rules/`** — Individual rule modules (react, style, security, import, etc.) that define which ESLint rules are enabled and their severity levels.
+- **`src/configs/`** — Config modules that combine related rules and plugins into focused, reusable blocks. Each config handles a specific concern (e.g., React, i18n, Prettier, automation).
+- **`src/index.js`** — Exports the themed configs for use in consumer projects.
+- **`src/typescript.js`** — TypeScript-specific config export.
+
+Rule details and descriptions have moved to [RULES.md](RULES.md). That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. See [RULES.md](RULES.md) in the repo root for the authoritative list and examples.
+
+### Custom rules
+
+Custom rules are defined in `src/rules/custom-rules/`:
+
+- **`no-direct-memoize.js`** — Prevents direct wrapping of components in React.memo without considering performance implications. Use memoization only when genuinely needed.
 
 ## **Scripts**
 
