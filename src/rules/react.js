@@ -14,6 +14,9 @@ export const reactRules = {
 	'react/jsx-no-duplicate-props': 'error',
 	'react/jsx-pascal-case': 'error',
 
+	// Security related rules
+	'react/no-danger': 'error',
+
 	// TODO: Enable these rules once the codebase is updated to follow best practices
 	'react/react-in-jsx-scope': 'off',
 	'react/jsx-key': 'off',
