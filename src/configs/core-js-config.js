@@ -1,8 +1,6 @@
 import eslint from '@eslint/js';
-import { fixupPluginRules } from '@eslint/compat';
 import globals from 'globals';
 
-import pluginMocha from 'eslint-plugin-mocha';
 import importPlugin from 'eslint-plugin-import';
 
 import styleRules from '../rules/style.js';
@@ -22,7 +20,6 @@ export default {
 	},
 
 	plugins: {
-		mocha: fixupPluginRules(pluginMocha),
 		import: importPlugin
 	},
 
@@ -32,5 +29,9 @@ export default {
 		...styleRules,
 		...importRules,
 		...securityRules
+	},
+
+	settings: {
+		'import/node-version': '18.20.0'
 	}
 };
