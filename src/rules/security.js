@@ -1,7 +1,7 @@
 export const securityRules = {
-	'no-eval': 2,
-	'no-implied-eval': 2,
-	'no-new-func': 2
+	'no-eval': 'error',
+	'no-implied-eval': 'error',
+	'no-new-func': 'error'
 };
 
 export default securityRules;

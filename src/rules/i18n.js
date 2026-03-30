@@ -1,5 +1,5 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const configUrl = import.meta.url;
 const intlPath = process.env.ESLINT_INTL_PATH ?? 'src/intl';
