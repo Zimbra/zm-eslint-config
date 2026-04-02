@@ -188,7 +188,7 @@ The package follows a modular structure:
 - **`src/index.js`** — Exports the themed configs for use in consumer projects.
 - **`src/typescript.js`** — TypeScript-specific config export.
 
-Rule details and descriptions have moved to [RULES.md](RULES.md). That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. See [RULES.md](RULES.md) in the repo root for the authoritative list and examples.
+Rule details and descriptions have moved to [RULES.md](RULES.md). That file contains a complete list of rule modules and plain-language explanations of what each rule enforces or why a rule is disabled. It also reflects the latest updates in this branch, including converting numeric rule severity values (0/1/2) into explicit words (`off`, `warn`, `error`) for `src/rules/style.js` and `src/rules/security.js` rules. See [RULES.md](RULES.md) in the repo root for the authoritative list and examples.
 
 ### Custom rules
 

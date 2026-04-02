@@ -62,6 +62,20 @@ Source: `src/rules/import.js`
 
 ---
 
+## **src/rules/security.js**
+
+Purpose: Security-focused rules that disallow unsafe JavaScript patterns.
+
+Rules and what they do:
+
+- `no-eval`: error — disallow `eval()` usage (runtime injection risk).
+- `no-implied-eval`: error — disallow `setTimeout/string` and similar implicit eval patterns.
+- `no-new-func`: error — disallow `new Function(...)` creation (runtime code execution risk).
+
+Source: `src/rules/security.js`
+
+---
+
 ## **src/rules/parser.js**
 
 Purpose: Central parser configuration used for TypeScript-enabled linting blocks.
@@ -134,11 +148,19 @@ Purpose: Style and code-shape rules that affect common JavaScript patterns.
 
 Rules and what they do:
 
-- `no-undef`: off — do not report undefined variables here (TypeScript or other checks may handle this).
-- `no-unsafe-optional-chaining`: off — allow some optional chaining patterns that would otherwise be flagged.
+- `new-cap`: warn — require constructor function names to be capitalized, but at warn level.
+- `no-console`: ['warn', { allow: ['warn', 'error'] }] — warn on console calls except `console.warn` and `console.error`.
+- `no-shadow-restricted-names`: error — disallow shadowing of restricted names such as `arguments`.
+- `no-shadow`: error — disallow variable shadowing.
+- `eqeqeq`: ['error', 'smart'] — require strict equality except for some safe special cases.
+- `camelcase`: ['warn', { properties: 'never' }] — warn on non-camelcase identifiers while allowing property names.
+- `guard-for-in`: error — require `hasOwnProperty` checks in `for..in` loops.
+- `prefer-rest-params`: error — prefer rest parameters over `arguments`.
+- `no-alert`: error — disallow alert/confirm/prompt usage.
+- `no-unused-vars`: ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true, caughtErrors: 'none' }] — report unused variables while allowing common ignore patterns.
 - `no-empty`: off — allow empty blocks in some cases.
 - `no-empty-pattern`: off — allow empty destructuring patterns.
-- `no-unused-vars`: `['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true, caughtErrors: 'none' }]` — report unused variables, but ignore some common patterns (e.g., rest siblings).
+- `no-unsafe-optional-chaining`: off — allow optional chaining in conditions that would otherwise be invalid.
 
 Source: `src/rules/style.js`
 
