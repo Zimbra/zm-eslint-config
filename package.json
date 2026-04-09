@@ -15,8 +15,8 @@
     "prepare": "husky || true"
   },
   "engines": {
-    "node": "^18.20.0",
-    "npm": "^6"
+    "node": "^25.9.0",
+    "npm": "^11.12.1"
   },
   "dependencies": {
     "@eslint/compat": "^1.0.0",
