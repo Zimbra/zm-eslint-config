@@ -26,15 +26,15 @@ export const i18nJsonRules = {
 };
 
 // Preact i18n rules
-export const i18nRules = {
-	'preact-i18n/no-missing-template-field': 'error',
-	'preact-i18n/no-text-as-attribute': 'error',
-	'preact-i18n/no-text-as-children': [
-		'error',
-		{ ignoreTextRegex: '^(?:\\s*[()🚩.":<>\\-/]\\s*)*$' }
-	],
-	'preact-i18n/no-unknown-key': 'error'
-};
+// export const i18nRules = {
+// 	'preact-i18n/no-missing-template-field': 'error',
+// 	'preact-i18n/no-text-as-attribute': 'error',
+// 	'preact-i18n/no-text-as-children': [
+// 		'error',
+// 		{ ignoreTextRegex: '^(?:\\s*[()🚩.":<>\\-/]\\s*)*$' }
+// 	],
+// 	'preact-i18n/no-unknown-key': 'error'
+// };
 
 export const LANGUAGE_FILES_RELATIVE = [
 	{
