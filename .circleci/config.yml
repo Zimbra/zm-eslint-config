@@ -45,7 +45,14 @@ feature-branch: &feature-branch
   filters:
     branches:
       ignore:
+        - master
         - /(custom_)?release\/.*/
+
+master-branch: &master-branch
+  filters:
+    branches:
+      only:
+        - master
 
 ############################################################################
 # COMMANDS
@@ -126,7 +133,7 @@ jobs:
 workflows:
   version: 2
 
-  lint-and-publish:
+  commit-workflow:
     jobs:
       - lint:
           <<: *feature-branch
@@ -142,3 +149,14 @@ workflows:
           <<: *env-context
           requires:
             - publish-approval
+
+  master-branch-workflow:
+    jobs:
+      - lint:
+          <<: *master-branch
+
+      - publish:
+          <<: *master-branch
+          <<: *env-context
+          requires:
+            - lint
