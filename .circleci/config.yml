@@ -45,14 +45,14 @@ feature-branch: &feature-branch
   filters:
     branches:
       ignore:
-        - master
+        - main
         - /(custom_)?release\/.*/
 
-master-branch: &master-branch
+main-branch: &main-branch
   filters:
     branches:
       only:
-        - master
+        - main
 
 ############################################################################
 # COMMANDS
@@ -150,13 +150,13 @@ workflows:
           requires:
             - publish-approval
 
-  master-branch-workflow:
+  main-branch-workflow:
     jobs:
       - lint:
-          <<: *master-branch
+          <<: *main-branch
 
       - publish:
-          <<: *master-branch
+          <<: *main-branch
           <<: *env-context
           requires:
             - lint
