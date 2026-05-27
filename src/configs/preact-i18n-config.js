@@ -1,7 +1,7 @@
 import { fixupPluginRules } from '@eslint/compat';
 import path from 'node:path';
 
-import pluginPreactI18n from 'eslint-plugin-preact-i18n';
+import pluginPreactI18n from '@zimbra/eslint-plugin-preact-i18n';
 
 import { i18nRules, LANGUAGE_FILES_RELATIVE, i18nTextComponents } from '../rules/i18n.js';
 
