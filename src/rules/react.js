@@ -16,6 +16,7 @@ export const reactRules = {
 
 	// Security related rules
 	'react/no-danger': 'error',
+	'react/jsx-no-target-blank': ['error', { allowReferrer: true }],
 
 	// TODO: Enable these rules once the codebase is updated to follow best practices
 	'react/react-in-jsx-scope': 'off',
