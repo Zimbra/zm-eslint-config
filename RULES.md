@@ -221,18 +221,21 @@ Source: `src/configs/sonarjs-config.js`
 
 ## **src/rules/custom-rules/custom-rules.js**
 
-Purpose: Enables custom (project-specific) rules located in `src/rules/custom-rules/`.
+Purpose: The Zimbra custom ESLint plugin — bundles all project-specific rules (from `src/plugin/rules/`) under a single `custom/` namespace. `src/configs/custom-config.js` registers this plugin and enables each rule.
 
-Key setting:
+Rules exposed by the plugin:
 
 - `custom/no-direct-memoize`: `error` — enable the rule that blocks direct memoize imports.
 - `custom/no-unsafe-window-open`: `error` — enable the rule that requires `noopener` in `window.open()`.
+- `custom/require-icon-import-suffix` — requires icon imports to be bound with an `Icon` suffix.
 
-Source: `src/rules/custom-rules/custom-rules.js`
+All three are enabled as `error` in `src/configs/custom-config.js`. Adjust severity (or drop a rule) in that config's `rules` map.
+
+Source: `src/plugin/index.js`
 
 ---
 
-## **src/rules/custom-rules/no-direct-memoize.js**
+## **src/plugin/rules/no-direct-memoize.js**
 
 Purpose: A custom rule that prevents importing certain memoize helpers directly.
 
@@ -257,7 +260,44 @@ import { createLRUMemoize } from 'some-lru-helper'; // ✅ allowed
 const memo = createLRUMemoize(...);
 ```
 
-Source: `src/rules/custom-rules/no-direct-memoize.js`
+Source: `src/plugin/rules/no-direct-memoize.js`
+
+---
+
+## **src/plugin/rules/require-icon-import-suffix.js**
+
+Purpose: A custom rule that enforces a readable naming convention for icon imports.
+
+What it enforces:
+
+- For imports from the configured icon modules (default `lucide-preact` and `@zimbra/lucide-lab`), the local binding name must end with `Icon`.
+- `lucide-preact` exposes `Icon`-suffixed exports, so use them directly: `import { ChartPieIcon } from 'lucide-preact'`.
+- Custom icon modules (e.g. `@zimbra/lucide-lab`) do not have the suffix, so alias on import: `import { pdf as pdfIcon } from '@zimbra/lucide-lab'`.
+- Default and namespace (`import * as`) imports from these modules are disallowed.
+
+Why: When a binding is used in JSX (e.g. `<ChartPieIcon />`), the `Icon` suffix makes it immediately clear the symbol is an icon, improving readability.
+
+Options (first option object):
+
+- `modules` — array of module names to check (default `['lucide-preact', '@zimbra/lucide-lab']`).
+- `suffix` — required suffix (default `'Icon'`).
+
+Examples that trigger the rule:
+
+```jsx
+import { ChartPie } from 'lucide-preact'; // ❌ → use { ChartPieIcon }
+import { pdf } from '@zimbra/lucide-lab'; // ❌ → use { pdf as pdfIcon }
+import * as Icons from 'lucide-preact'; // ❌ namespace import
+```
+
+Examples that follow the rule:
+
+```jsx
+import { ChartPieIcon } from 'lucide-preact'; // ✅
+import { pdf as pdfIcon } from '@zimbra/lucide-lab'; // ✅
+```
+
+Source: `src/plugin/rules/require-icon-import-suffix.js`
 
 ---
 

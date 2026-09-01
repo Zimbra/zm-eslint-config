@@ -210,6 +210,7 @@ The package follows a modular structure:
 
 - **`src/rules/`** — Individual rule modules (react, style, security, import, etc.) that define which ESLint rules are enabled and their severity levels.
 - **`src/configs/`** — Config modules that combine related rules and plugins into focused, reusable blocks. Each config handles a specific concern (e.g., React, i18n, Prettier, automation).
+- **`src/plugin/`** — The Zimbra custom ESLint plugin: the plugin object (`index.js`) and its rule implementations (`rules/`), registered under the `custom/` namespace by `src/configs/custom-config.js`.
 - **`src/index.js`** — Exports the themed configs for use in consumer projects.
 - **`src/typescript.js`** — TypeScript-specific config export.
 
@@ -217,10 +218,13 @@ Rule details and descriptions have moved to [RULES.md](RULES.md). That file cont
 
 ### Custom rules
 
-Custom rules are defined in `src/rules/custom-rules/`:
+Custom rules live in the `src/plugin/` plugin (`src/plugin/rules/`) and are enabled via `src/configs/custom-config.js` under the `custom/` namespace:
 
 - **`no-direct-memoize.js`** — Prevents direct wrapping of components in React.memo without considering performance implications. Use memoization only when genuinely needed.
 - **`no-unsafe-window-open.js`** — Requires `noopener` (or `noreferrer`, which implies it) in the third argument of `window.open()` when the call opens a new browsing context, so the opened page cannot reach back through `window.opener`. Accepts the option `includeNamedTargets` (default `false`) to extend the check from `_blank` to named targets. A call that uses the window it returns gets a different message, because `window.open()` returns `null` once `noopener` is set — those sites need a manual decision, not an added flag.
+- **`require-icon-import-suffix.js`** — Requires icon imports (from `lucide-preact` and `@zimbra/lucide-lab` by default) to be bound with an `Icon` suffix, e.g. `import { ChartPieIcon } from 'lucide-preact'` or `import { pdf as pdfIcon } from '@zimbra/lucide-lab'`.
+
+See [RULES.md](RULES.md) for full descriptions, options, and examples.
 
 ## **Scripts**
 

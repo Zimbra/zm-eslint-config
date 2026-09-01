@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import { RuleTester } from 'eslint';
 import globals from 'globals';
 
-import rule from '../src/rules/custom-rules/no-unsafe-window-open.js';
+import rule from '../src/plugin/rules/no-unsafe-window-open.js';
 
 RuleTester.describe = describe;
 RuleTester.it = it;
