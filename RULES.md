@@ -41,6 +41,7 @@ Rules and what they do:
 - `preact-i18n/no-text-as-attribute` — prevents raw text used directly in attributes instead of using translations.
 - `preact-i18n/no-text-as-children` — prevents raw text as children in i18n-aware components (ignores small punctuation-only strings).
 - `preact-i18n/no-unknown-key` — reports when a translation key used in code is not found in the locale files.
+- `preact-i18n/no-unencoded-markup-field` — reports when a dynamic value is interpolated into a `<MarkupText>` `fields` object without being HTML-encoded. Because `MarkupText` renders its fields as markup, an unencoded attacker-controlled value is a stored-XSS risk (see ZS-165); wrap such values in `htmlEncode()`. Plain `<Text>` components are unaffected since they escape their fields.
 
 Notes:
 - Use `ESLINT_INTL_PATH` environment variable to change where locale files are read from.
