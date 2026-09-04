@@ -16,7 +16,10 @@ export const reactRules = {
 
 	// Security related rules
 	'react/no-danger': 'error',
-	'react/jsx-no-target-blank': ['error', { allowReferrer: true }],
+	// Already enabled by react/recommended; re-declared to allow `rel="noopener"`
+	// without `noreferrer` (matching custom/no-unsafe-window-open) and to cover
+	// `<form target="_blank">`, which the rule skips by default.
+	'react/jsx-no-target-blank': ['error', { allowReferrer: true, forms: true }],
 
 	// TODO: Enable these rules once the codebase is updated to follow best practices
 	'react/react-in-jsx-scope': 'off',
