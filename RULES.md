@@ -238,6 +238,7 @@ What it enforces:
 - Recognises the global reached as `window`, `globalThis`, `self`, `top`, `parent`, a chain such as `window.top`, or a bare `open()`. Locally declared, imported or shadowed names are ignored.
 - Reads the features argument the way browsers do: `=`, `,` and whitespace all separate tokens, and `noopener=no`/`noopener=0`/`noopener=false` count as disabled.
 - Skips targets that reuse the current context (`_self`, `_parent`, `_top`) and any argument whose value is not known at lint time.
+- Reports a call that uses the window it returns under a separate message, since adding `noopener` would make that call return `null`. Such a site needs a deliberate decision — keep the handle and open only trusted URLs, or drop the handle and add `noopener` — so the rule never suggests a change that would break it.
 
 Why: Without `noopener` the opened page can reach the originating page through `window.opener` and navigate it (reverse tabnabbing).
 
@@ -252,6 +253,10 @@ Example that triggers the rule:
 ```js
 window.open(url, '_blank'); // ❌ opened page gets window.opener
 window.open(url, '_blank', 'width=500,noopener=no'); // ❌ noopener explicitly disabled
+
+// ❌ reported under the separate message: 'noopener' would make this return null
+const w = window.open(url, '_blank');
+w.focus();
 ```
 
 Example that follows the rule:
@@ -457,7 +462,7 @@ Metadata from the rule (auto-extracted):
 - **Description**: Require 'noopener' in window.open() when the target opens a new browsing context
 - **Type**: problem
 - **Recommended**: true
-- **Message**: "Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."
+- **Messages**: `requireNoopener` — "Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."; `reviewOpenerAccess` — used when the call's returned window is consumed, since `noopener` would make it `null`.
 - **Options**: `includeNamedTargets` (boolean, default `false`)
 
 Behavior summary:
@@ -466,6 +471,7 @@ Behavior summary:
 - Treats a missing or empty target as `_blank`, ignores `_self`/`_parent`/`_top`, and ignores named targets unless `includeNamedTargets` is enabled.
 - Accepts `noopener` or `noreferrer` in the features argument, parsed with the browser's tokenizer (`=`, `,` and whitespace as separators) and boolean semantics (`noopener=no` is disabled).
 - Ignores arguments whose value is not statically known, to avoid false positives.
+- Switches to `reviewOpenerAccess` when the call's return value is consumed, so the rule never suggests adding `noopener` to a call that needs the returned window.
 
 Source: `src/rules/custom-rules/no-unsafe-window-open.js`
 

@@ -113,6 +113,26 @@ ruleTester.run('no-unsafe-window-open', rule, {
 			code: "window.open(url, ' _blank')",
 			options: [{ includeNamedTargets: true }],
 			errors: error
+		},
+
+		// A call whose returned window is used cannot simply gain 'noopener',
+		// since open() then returns null, so it gets its own message.
+		{
+			code: "const w = window.open(url, '_blank'); w.focus();",
+			errors: [{ messageId: 'reviewOpenerAccess' }]
+		},
+		{
+			code: "window.open(url, '_blank').focus()",
+			errors: [{ messageId: 'reviewOpenerAccess' }]
+		},
+		{
+			code: "function f() { return window.open(url, '_blank'); }",
+			errors: [{ messageId: 'reviewOpenerAccess' }]
+		},
+		{
+			code: "const w = window.open(url, 'showOriginal', 'height=400,width=650'); w.focus();",
+			options: [{ includeNamedTargets: true }],
+			errors: [{ messageId: 'reviewOpenerAccess' }]
 		}
 	]
 });

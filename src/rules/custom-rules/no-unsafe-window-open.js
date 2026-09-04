@@ -68,6 +68,18 @@ function parseFeatures(value) {
 	return features;
 }
 
+// True when the call's return value is consumed. open() returns null once
+// 'noopener' is set, so such a call cannot simply have 'noopener' added to it.
+function usesReturnValue(node) {
+	let current = node;
+
+	while (current.parent && current.parent.type === 'ChainExpression') {
+		current = current.parent;
+	}
+
+	return Boolean(current.parent) && current.parent.type !== 'ExpressionStatement';
+}
+
 // https://html.spec.whatwg.org/#concept-window-open-features-parse-boolean
 function isFeatureEnabled(features, name) {
 	if (!features.has(name)) {
@@ -98,7 +110,9 @@ export default {
 		fixable: null,
 		messages: {
 			requireNoopener:
-				"Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."
+				"Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'.",
+			reviewOpenerAccess:
+				"Security risk: open() with target '{{target}}' gives the opened page access to window.opener, but this call uses the window it returns and open() returns null once 'noopener' is set. Open only trusted URLs here, then suppress this with an eslint-disable comment explaining why."
 		},
 		schema: [
 			{
@@ -177,7 +191,7 @@ export default {
 
 				context.report({
 					node,
-					messageId: 'requireNoopener',
+					messageId: usesReturnValue(node) ? 'reviewOpenerAccess' : 'requireNoopener',
 					data: { target }
 				});
 			}
