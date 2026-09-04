@@ -11,6 +11,7 @@
   "scripts": {
     "lint": "eslint src --config eslint.config.mjs",
     "lint:fix": "npm run lint -- --fix",
+    "test": "node --test tests/",
     "prepublishOnly": "if [ \"$CI\" != \"true\" ]; then npm run lint && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags; fi",
     "prepare": "husky || true"
   },

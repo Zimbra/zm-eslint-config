@@ -137,6 +137,8 @@ Rules and what they do:
 - `react/no-unknown-property`: off — allow some non-standard attributes (project-specific usage).
 - `react/react-in-jsx-scope`: off — no longer required with newer JSX transforms.
 - `react/jsx-key`: off — JSX key warnings are disabled (teams may use different patterns).
+- `react/no-danger`: error — do not use `dangerouslySetInnerHTML`.
+- `react/jsx-no-target-blank`: error with `{ allowReferrer: true, forms: true }` — `target="_blank"` links and forms must carry `rel="noopener"`; `noreferrer` is not additionally required, matching `custom/no-unsafe-window-open`. The rule is already on via `react/recommended`; this entry only adjusts its options.
 
 Source: `src/rules/react.js`
 
@@ -191,6 +193,7 @@ Purpose: Enables custom (project-specific) rules located in `src/rules/custom-ru
 Key setting:
 
 - `custom/no-direct-memoize`: `error` — enable the rule that blocks direct memoize imports.
+- `custom/no-unsafe-window-open`: `error` — enable the rule that requires `noopener` in `window.open()`.
 
 Source: `src/rules/custom-rules/custom-rules.js`
 
@@ -222,6 +225,49 @@ const memo = createLRUMemoize(...);
 ```
 
 Source: `src/rules/custom-rules/no-direct-memoize.js`
+
+---
+
+## **src/rules/custom-rules/no-unsafe-window-open.js**
+
+Purpose: A custom rule that requires `noopener` when `window.open()` opens a new browsing context.
+
+What it enforces:
+
+- Flags `open()` calls whose target opens a new browsing context (`_blank`, a missing target, or an empty target — all of which mean `_blank`) unless the third argument enables `noopener` or `noreferrer`.
+- Recognises the global reached as `window`, `globalThis`, `self`, `top`, `parent`, a chain such as `window.top`, or a bare `open()`. Locally declared, imported or shadowed names are ignored.
+- Reads the features argument the way browsers do: `=`, `,` and whitespace all separate tokens, and `noopener=no`/`noopener=0`/`noopener=false` count as disabled.
+- Skips targets that reuse the current context (`_self`, `_parent`, `_top`) and any argument whose value is not known at lint time.
+- Reports a call that uses the window it returns under a separate message, since adding `noopener` would make that call return `null`. Such a site needs a deliberate decision — keep the handle and open only trusted URLs, or drop the handle and add `noopener` — so the rule never suggests a change that would break it.
+
+Why: Without `noopener` the opened page can reach the originating page through `window.opener` and navigate it (reverse tabnabbing).
+
+Options:
+
+- `includeNamedTargets` (boolean, default `false`) — also flag named targets such as `window.open(url, 'myWindow')`, which create a new browsing context with an opener too.
+
+Not fixable: `window.open()` returns `null` once `noopener` is set, so adding it automatically would break callers that use the returned window handle.
+
+Example that triggers the rule:
+
+```js
+window.open(url, '_blank'); // ❌ opened page gets window.opener
+window.open(url, '_blank', 'width=500,noopener=no'); // ❌ noopener explicitly disabled
+
+// ❌ reported under the separate message: 'noopener' would make this return null
+const w = window.open(url, '_blank');
+w.focus();
+```
+
+Example that follows the rule:
+
+```js
+window.open(url, '_blank', 'noopener,noreferrer'); // ✅ allowed
+window.open(url, '_blank', 'width=500,noopener=yes'); // ✅ allowed
+window.open(url, '_self'); // ✅ no new browsing context
+```
+
+Source: `src/rules/custom-rules/no-unsafe-window-open.js`
 
 # RULES
 
@@ -335,6 +381,8 @@ Key settings (excerpt):
 - `react/no-unknown-property`: off
 - `react/react-in-jsx-scope`: off
 - `react/jsx-key`: off
+- `react/no-danger`: error
+- `react/jsx-no-target-blank`: `['error', { allowReferrer: true, forms: true }]`
 
 Source: `src/rules/react.js`
 
@@ -377,6 +425,7 @@ Purpose: Enable custom rules defined in `src/rules/custom-rules/`.
 Key setting:
 
 - `custom/no-direct-memoize`: `error`
+- `custom/no-unsafe-window-open`: `error`
 
 This file acts as a small wrapper to enable Zimbra-specific custom rules.
 
@@ -401,6 +450,30 @@ Behavior summary:
 - Reports on `require()` calls with the same disallowed modules.
 
 Source: `src/rules/custom-rules/no-direct-memoize.js`
+
+---
+
+## **src/rules/custom-rules/no-unsafe-window-open.js**
+
+Purpose: Custom lint rule that requires `noopener` in `window.open()` calls that open a new browsing context, preventing reverse tabnabbing through `window.opener`.
+
+Metadata from the rule (auto-extracted):
+
+- **Description**: Require 'noopener' in window.open() when the target opens a new browsing context
+- **Type**: problem
+- **Recommended**: true
+- **Messages**: `requireNoopener` — "Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."; `reviewOpenerAccess` — used when the call's returned window is consumed, since `noopener` would make it `null`.
+- **Options**: `includeNamedTargets` (boolean, default `false`)
+
+Behavior summary:
+
+- Reports on `CallExpression` nodes calling `open` on a window global (`window`, `globalThis`, `self`, `top`, `parent`, chains such as `window.top`, or a bare `open()`), using scope analysis so local or imported `open` bindings are ignored.
+- Treats a missing or empty target as `_blank`, ignores `_self`/`_parent`/`_top`, and ignores named targets unless `includeNamedTargets` is enabled.
+- Accepts `noopener` or `noreferrer` in the features argument, parsed with the browser's tokenizer (`=`, `,` and whitespace as separators) and boolean semantics (`noopener=no` is disabled).
+- Ignores arguments whose value is not statically known, to avoid false positives.
+- Switches to `reviewOpenerAccess` when the call's return value is consumed, so the rule never suggests adding `noopener` to a call that needs the returned window.
+
+Source: `src/rules/custom-rules/no-unsafe-window-open.js`
 
 ---
 
