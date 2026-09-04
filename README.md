@@ -168,7 +168,7 @@ Notes:
 ### Main exports from `src/index.js`
 
 - **`coreJsConfig`** — Base JavaScript config with ESLint recommended rules, import rules, security, and style rules.
-- **`customConfig`** — Custom Zimbra rules (includes `no-direct-memoize` and other custom patterns).
+- **`customConfig`** — Custom Zimbra rules (includes `no-direct-memoize`, `no-unsafe-window-open` and other custom patterns).
 - **`reactConfig`** — React and React Hooks rules (includes plugin setup and recommended rules).
 - **`preactI18nConfig`** — Preact i18n rules and configuration (requires `ESLINT_INTL_PATH` environment variable or defaults to `src/intl`).
 - **`prettierConfig`** — Prettier integration (formatting rules and conflict resolution).
@@ -195,6 +195,7 @@ Rule details and descriptions have moved to [RULES.md](RULES.md). That file cont
 Custom rules are defined in `src/rules/custom-rules/`:
 
 - **`no-direct-memoize.js`** — Prevents direct wrapping of components in React.memo without considering performance implications. Use memoization only when genuinely needed.
+- **`no-unsafe-window-open.js`** — Requires `noopener` (or `noreferrer`, which implies it) in the third argument of `window.open()` when the call opens a new browsing context, so the opened page cannot reach back through `window.opener`. Accepts the option `includeNamedTargets` (default `false`) to extend the check from `_blank` to named targets.
 
 ## **Scripts**
 
@@ -202,6 +203,7 @@ This repository provides convenience scripts in `package.json` that are useful f
 
 - `npm run lint` — runs `eslint src`
 - `npm run lint:fix` — runs `eslint src --fix`
+- `npm test` — runs the custom-rule tests in `tests/` with ESLint's `RuleTester`
 
 ## **Publishing**
 
