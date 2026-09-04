@@ -195,7 +195,7 @@ Rule details and descriptions have moved to [RULES.md](RULES.md). That file cont
 Custom rules are defined in `src/rules/custom-rules/`:
 
 - **`no-direct-memoize.js`** — Prevents direct wrapping of components in React.memo without considering performance implications. Use memoization only when genuinely needed.
-- **`no-unsafe-window-open.js`** — Requires `noopener` (or `noreferrer`, which implies it) in the third argument of `window.open()` when the call opens a new browsing context, so the opened page cannot reach back through `window.opener`. Accepts the option `includeNamedTargets` (default `false`) to extend the check from `_blank` to named targets.
+- **`no-unsafe-window-open.js`** — Requires `noopener` (or `noreferrer`, which implies it) in the third argument of `window.open()` when the call opens a new browsing context, so the opened page cannot reach back through `window.opener`. Accepts the option `includeNamedTargets` (default `false`) to extend the check from `_blank` to named targets. A call that uses the window it returns gets a different message, because `window.open()` returns `null` once `noopener` is set — those sites need a manual decision, not an added flag.
 
 ## **Scripts**
 
