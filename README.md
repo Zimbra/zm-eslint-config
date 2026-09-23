@@ -28,6 +28,7 @@ This package provides:
 
 - **A base ESLint config** (default export) customized or adapted specifically for Zimbra projects.
 - **A TypeScript-focused config** (exported at `./src/typescript.js`).
+- **A SonarJS quality gate config** (exported at `./src/sonarjs.js`) that keeps SonarJS fully enabled and disables overlapping base rules when placed later in the flat config array.
 - **Curated configs** in `src/configs/` for special cases (automation, core-js, locale JSON, etc.).
 - **Rule definitions and small custom plugins** under `src/rules/`, including `custom-rules` used internally.
 
@@ -140,16 +141,38 @@ export default [
 ];
 ```
 
+JavaScript project with SonarJS quality checks enabled as a separate config block:
+
+```js
+// eslint.config.mjs
+import { coreJsConfig, sonarjsConfig } from "@zimbra/eslint-config";
+
+export default [
+  coreJsConfig,
+  sonarjsConfig,
+  {
+    files: ["**/*.{js,jsx,mjs,cjs}"],
+    rules: {
+      // local overrides
+    }
+  }
+];
+```
+
+Place `sonarjsConfig` after `coreJsConfig` (and after `typescriptConfig` when used) so its overlap shutdowns apply last and SonarJS remains the authoritative rule source for duplicated checks.
+
 TypeScript project using the package TypeScript export:
 
 ```js
 // eslint.config.mjs
 import { coreJsConfig } from "@zimbra/eslint-config";
-import typescriptConfig from "@zimbra/eslint-config/typescript";
+import { tsEslintConfig } from "@zimbra/eslint-config/typescript";
+import sonarjsConfig from "@zimbra/eslint-config/sonarjs";
 
 export default [
   coreJsConfig,
-  typescriptConfig,
+  ...tsEslintConfig,
+  sonarjsConfig,
   {
     files: ["**/*.ts", "**/*.tsx"],
     // local TypeScript overrides (if needed)
@@ -170,6 +193,7 @@ Notes:
 - **`coreJsConfig`** — Base JavaScript config with ESLint recommended rules, import rules, security, and style rules.
 - **`customConfig`** — Custom Zimbra rules (includes `no-direct-memoize`, `no-unsafe-window-open` and other custom patterns).
 - **`reactConfig`** — React and React Hooks rules (includes plugin setup and recommended rules).
+- **`sonarjsConfig`** — SonarJS quality checks with SonarJS recommended rules left fully enabled while overlapping base ESLint rules are switched off in the later config block.
 - **`preactI18nConfig`** — Preact i18n rules and configuration (requires `ESLINT_INTL_PATH` environment variable or defaults to `src/intl`).
 - **`prettierConfig`** — Prettier integration (formatting rules and conflict resolution).
 - **`automationConfig`** — Automation/TestCafe rules for test files.
@@ -178,6 +202,7 @@ Notes:
 ### Additional exports
 
 - `./typescript` -> `src/typescript.js` (TypeScript-focused config — exports `tsEslintConfig`)
+- `./sonarjs` -> `src/sonarjs.js` (SonarJS quality gate configuration; exports `sonarjsConfig`)
 
 ## **Architecture & rule organization**
 
