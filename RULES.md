@@ -202,7 +202,6 @@ Overlapping core rules intentionally disabled in this config:
 - `no-eval`: off — SonarJS's `sonarjs/code-eval` rule covers the same unsafe pattern and should be the source of truth when SonarJS is included.
 - `no-implied-eval`: off — handled by SonarJS's code-eval checks.
 - `no-new-func`: off — covered by SonarJS's `code-eval` rule.
-- `no-unused-vars`: off — SonarJS's `sonarjs/no-unused-vars` is enabled as the preferred check for this repo when SonarJS is active.
 - `no-fallthrough`: off — SonarJS's `sonarjs/no-fallthrough` is preferred for the same bug pattern.
 - `no-control-regex`: off — SonarJS's regex-focused checks handle this more comprehensively.
 - `no-empty-character-class`: off — covered by SonarJS regex checks.
@@ -214,7 +213,7 @@ Overlapping core rules intentionally disabled in this config:
 
 Recommended usage:
 
-- Put `sonarjsConfig` after `coreJsConfig` (and after `typescriptConfig` if using TS) in the flat config array so its overlap suppressions win last.
+- Put `sonarjsConfig` after `coreJsConfig` (and after the spread `tsEslintConfig` if using TypeScript) in the flat config array so its overlap suppressions win last.
 
 Source: `src/configs/sonarjs-config.js`
 
