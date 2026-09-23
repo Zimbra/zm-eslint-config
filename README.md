@@ -27,8 +27,8 @@ This package bundles a set of shareable ESLint configs and rule customizations s
 This package provides:
 
 - **A base ESLint config** (default export) customized or adapted specifically for Zimbra projects.
-- **A TypeScript-focused config** (exported at `./src/typescript.js`).
-- **A SonarJS quality gate config** (exported at `./src/sonarjs.js`) that keeps SonarJS fully enabled and disables overlapping base rules when placed later in the flat config array.
+- **A TypeScript-focused config** (exported at `./typescript`).
+- **A SonarJS quality gate config** (exported at `./sonarjs`) that keeps SonarJS fully enabled and disables overlapping base rules when placed later in the flat config array.
 - **Curated configs** in `src/configs/` for special cases (automation, core-js, locale JSON, etc.).
 - **Rule definitions and small custom plugins** under `src/rules/`, including `custom-rules` used internally.
 
@@ -159,7 +159,7 @@ export default [
 ];
 ```
 
-Place `sonarjsConfig` after `coreJsConfig` (and after `typescriptConfig` when used) so its overlap shutdowns apply last and SonarJS remains the authoritative rule source for duplicated checks.
+Place `sonarjsConfig` after `coreJsConfig` (and after `tsEslintConfig` when used) so its overlap shutdowns apply last and SonarJS remains the authoritative rule source for duplicated checks.
 
 TypeScript project using the package TypeScript export:
 

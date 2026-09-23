@@ -2,7 +2,7 @@ import sonarjs from 'eslint-plugin-sonarjs';
 
 // Keep SonarJS fully enabled and switch off overlapping base rules in this
 // later config block so consumers can make SonarJS authoritative by placing it
-// after coreJsConfig / typescriptConfig in the flat config array.
+// after coreJsConfig / tsEslintConfig in the flat config array.
 const disabledOverlappingBaseRules = {
 	'no-control-regex': 'off',
 	'no-delete-var': 'off',
@@ -14,7 +14,6 @@ const disabledOverlappingBaseRules = {
 	'no-misleading-character-class': 'off',
 	'no-new-func': 'off',
 	'no-regex-spaces': 'off',
-	'no-unused-vars': 'off',
 	'no-useless-catch': 'off'
 };
 

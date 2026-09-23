@@ -23,14 +23,14 @@ This repository is a shareable ESLint config package. A rule change is not compl
 ## Required workflow
 
 1. **Inspect the current shape before editing**
-   - Read the relevant files in `src/rules/`, `src/configs/`, `src/index.js`, `src/typescript.js`, `package.json`, `README.md`, and `RULES.md`.
+   - Read the relevant files in `src/rules/`, `src/configs/`, `src/index.js`, `src/typescript.js`, `src/sonarjs.js`, `package.json`, `README.md`, and `RULES.md`.
    - Check whether the change affects JavaScript, React, hooks, TypeScript, automation, i18n, Prettier, custom rules, or an exported config block.
    - Search for existing tests before creating new ones.
 
 2. **Choose the right home for the change**
    - Put rule toggles and options in the appropriate file under `src/rules/` when they belong to an existing rule group.
    - Put plugin wiring and combined config behavior in `src/configs/`.
-   - Put package-level exports in `src/index.js`, `src/typescript.js`, or dedicated export entrypoints when needed.
+   - Put package-level exports in `src/index.js`, `src/typescript.js`, `src/sonarjs.js` or dedicated export entrypoints when needed.
    - If a change introduces a new reusable config block, export it consistently from the package.
 
 3. **Handle plugin and dependency changes completely**
@@ -75,6 +75,7 @@ This repository is a shareable ESLint config package. A rule change is not compl
 - `src/configs/*.js` — plugin wiring and composed config behavior
 - `src/index.js` — package exports for shared config blocks
 - `src/typescript.js` — TypeScript export entrypoint
+- `src/sonarjs.js` — SonarJS export entrypoint
 - `package.json` / `package-lock.json` — dependency and export path changes
 - `tests/*.test.js` — custom rule and config regression coverage
 - `README.md` — public usage and export documentation

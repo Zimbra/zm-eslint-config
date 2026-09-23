@@ -13,6 +13,7 @@ When working on ESLint rules, plugins, configs, or exports:
    - `src/configs/*.js`
    - `src/index.js`
    - `src/typescript.js`
+	- `src/sonarjs.js`
    - `package.json`
    - `README.md`
    - `RULES.md`
