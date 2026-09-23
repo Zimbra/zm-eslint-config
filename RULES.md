@@ -1,6 +1,6 @@
 # RULES
 
-This file is generated from `src/rules/` and `src/rules/custom-rules/`. It lists the rule modules and explains, in simple language, what each rule or setting does. Keep this file up to date when rules change.
+This file is generated from `src/rules/`, `src/rules/custom-rules/`, and `src/configs/`. It lists the rule modules and explains, in simple language, what each rule or setting does. Keep this file up to date when rules change.
 
 ---
 
@@ -186,6 +186,40 @@ Source: `src/rules/typescript.js`
 
 ---
 
+## **src/configs/sonarjs-config.js**
+
+Purpose: Enable SonarJS's recommended JavaScript and TypeScript quality checks while making the SonarJS config authoritative when it is placed after the base config blocks in a flat ESLint config array.
+
+How it works:
+
+- Imports `eslint-plugin-sonarjs` and registers it under the `sonarjs` plugin namespace.
+- Spreads `sonarjs.configs.recommended.rules` so the recommended SonarJS rule set is active by default.
+- Disables selected core ESLint rules that would otherwise duplicate SonarJS checks, so the SonarJS config wins when both are active in the same lint run.
+- This is intentionally a separate opt-in config rather than a mutation of the base `coreJsConfig`, so teams can decide exactly when to include SonarJS.
+
+Overlapping core rules intentionally disabled in this config:
+
+- `no-eval`: off — SonarJS's `sonarjs/code-eval` rule covers the same unsafe pattern and should be the source of truth when SonarJS is included.
+- `no-implied-eval`: off — handled by SonarJS's code-eval checks.
+- `no-new-func`: off — covered by SonarJS's `code-eval` rule.
+- `no-unused-vars`: off — SonarJS's `sonarjs/no-unused-vars` is enabled as the preferred check for this repo when SonarJS is active.
+- `no-fallthrough`: off — SonarJS's `sonarjs/no-fallthrough` is preferred for the same bug pattern.
+- `no-control-regex`: off — SonarJS's regex-focused checks handle this more comprehensively.
+- `no-empty-character-class`: off — covered by SonarJS regex checks.
+- `no-invalid-regexp`: off — SonarJS's `no-invalid-regexp` is the authoritative rule here.
+- `no-misleading-character-class`: off — SonarJS's equivalent regex validation is preferred.
+- `no-regex-spaces`: off — SonarJS's regex validation covers it.
+- `no-delete-var`: off — SonarJS's rule set is the preferred enforcement for this pattern.
+- `no-useless-catch`: off — SonarJS's equivalent rule is used when the SonarJS config is active.
+
+Recommended usage:
+
+- Put `sonarjsConfig` after `coreJsConfig` (and after `typescriptConfig` if using TS) in the flat config array so its overlap suppressions win last.
+
+Source: `src/configs/sonarjs-config.js`
+
+---
+
 ## **src/rules/custom-rules/custom-rules.js**
 
 Purpose: Enables custom (project-specific) rules located in `src/rules/custom-rules/`.
@@ -268,215 +302,3 @@ window.open(url, '_self'); // ✅ no new browsing context
 ```
 
 Source: `src/rules/custom-rules/no-unsafe-window-open.js`
-
-# RULES
-
-This file was generated automatically from the source files under `src/rules/` and `src/rules/custom-rules/`. It summarizes the purpose and key settings for each rule/config module exported by the package. If you change rules in `src/rules`, regenerate this file or update it manually.
-
----
-
-## **src/rules/automation.js**
-
-Purpose: Relax or adjust linting rules for automation and CI scripts. The automation rules turn off several stylistic and runtime checks that are commonly noisy in automation scripts and set a required semicolon style.
-
-Key settings (excerpt):
-
-- `prettier/prettier`: off
-- `prefer-const`: off
-- `require-atomic-updates`: off
-- `guard-for-in`: off
-- `semi`: ["error", "always"]
-
-Use when: applying lint rules to scripts used in CI, build tooling, or non-interactive environments where stricter runtime style checks may be unnecessary.
-
-Source: `src/rules/automation.js`
-
----
-
-## **src/rules/i18n.js**
-
-Purpose: Provide i18n-related rules and configuration for both JSON locale files and Preact/Preact-i18n usage.
-
-What it contains:
-
-- `i18nJsonRules` — configuration for `eslint-plugin-i18n-json`, including a custom sort function (`scripts/intl/lint-custom-sort.cjs`) and reference to the primary language file (defaults to `src/intl/en_US.json` or overridden via `ESLINT_INTL_PATH`).
-- `i18nRules` — runtime/template checks for Preact i18n (e.g. `no-missing-template-field`, `no-text-as-attribute`).
-- `LANGUAGE_FILES_RELATIVE` — a list of supported language filename mappings included for reference.
-- `i18nTextComponents` — helper patterns used to identify text-containing components for i18n checks.
-
-Notes:
-
-- `ESLINT_INTL_PATH` env var can override the default locale path.
-- Useful for projects that validate JSON locale files and enforce i18n usage in templates.
-
-Source: `src/rules/i18n.js`
-
----
-
-## **src/rules/import.js**
-
-Purpose: Minimal adjustments for `eslint-plugin-import` rules in this config.
-
-Key settings (excerpt):
-
-- `import/no-unresolved`: off
-- `import/no-named-as-default`: off
-
-Source: `src/rules/import.js`
-
----
-
-## **src/rules/parser.js**
-
-Purpose: Centralized parser configuration for TypeScript-aware parsing.
-
-Key settings:
-
-- `parser`: `@typescript-eslint/parser`
-- `sourceType`: `module`
-- `ecmaVersion`: `latest`
-- `parserOptions.requireConfigFile`: false
-- `parserOptions.ecmaFeatures.jsx`: true
-
-Use when: enabling TypeScript rules or type-aware linting blocks.
-
-Source: `src/rules/parser.js`
-
----
-
-## **src/rules/prettier.js**
-
-Purpose: Prettier integration settings exposed as an ESLint rule block.
-
-Key settings (excerpt):
-
-- `prettier/prettier`: `error` with options: `singleQuote: true`, `printWidth: 100`, `trailingComma: 'none'`, `arrowParens: 'avoid'`.
-
-This file configures Prettier rules so that formatting errors are surfaced by ESLint and can be fixed with `eslint --fix` when `prettier` and `eslint-plugin-prettier` are present.
-
-Source: `src/rules/prettier.js`
-
----
-
-## **src/rules/react-hooks.js**
-
-Purpose: Adjust React Hooks-related rules. This config disables certain rules from `eslint-plugin-react-hooks` that are not desired across Zimbra codebases.
-
-Key settings:
-
-- `react-hooks/refs`: off
-- `react-hooks/immutability`: off
-
-Source: `src/rules/react-hooks.js`
-
----
-
-## **src/rules/react.js**
-
-Purpose: React-specific rule adjustments. The config turns off prop-types and other rules that are unnecessary in modern TypeScript/React codebases or in projects that use other type systems.
-
-Key settings (excerpt):
-
-- `react/prop-types`: off
-- `react/no-unknown-property`: off
-- `react/react-in-jsx-scope`: off
-- `react/jsx-key`: off
-- `react/no-danger`: error
-- `react/jsx-no-target-blank`: `['error', { allowReferrer: true, forms: true }]`
-
-Source: `src/rules/react.js`
-
----
-
-## **src/rules/style.js**
-
-Purpose: Style and basic code-shape rules. Controls undefined variables, empty patterns, and unused variable behavior.
-
-Key settings (excerpt):
-
-- `no-undef`: off
-- `no-empty`: off
-- `no-unused-vars`: `['error',{vars:'all',args:'after-used',ignoreRestSiblings:true,caughtErrors:'none'}]`
-
-Source: `src/rules/style.js`
-
----
-
-## **src/rules/typescript.js**
-
-Purpose: TypeScript-focused rule overrides using `@typescript-eslint` plugin.
-
-Key settings (excerpt):
-
-- `@typescript-eslint/no-explicit-any`: off
-- `@typescript-eslint/no-unused-vars`: off
-- `@typescript-eslint/no-empty-object-type`: off
-
-These relax certain strict checks which may otherwise be noisy across the codebase; enable stronger checks by overriding in a project's local config if desired.
-
-Source: `src/rules/typescript.js`
-
----
-
-## **src/rules/custom-rules/custom-rules.js**
-
-Purpose: Enable custom rules defined in `src/rules/custom-rules/`.
-
-Key setting:
-
-- `custom/no-direct-memoize`: `error`
-- `custom/no-unsafe-window-open`: `error`
-
-This file acts as a small wrapper to enable Zimbra-specific custom rules.
-
-Source: `src/rules/custom-rules/custom-rules.js`
-
----
-
-## **src/rules/custom-rules/no-direct-memoize.js**
-
-Purpose: Custom lint rule that disallows direct imports of `es-toolkit/compat/memoize` and `es-toolkit/memoize` and instructs developers to use `createLRUMemoize` instead.
-
-Metadata from the rule (auto-extracted):
-
-- **Description**: Disallow direct import of es-toolkit/compat/memoize or es-toolkit/memoize; use createLRUMemoize
-- **Type**: problem
-- **Recommended**: true
-- **Message**: "Do not import es-toolkit/compat/memoize or es-toolkit/memoize; directly. Use 'createLRUMemoize' instead."
-
-Behavior summary:
-
-- Reports on ES module `ImportDeclaration` nodes when the source matches any disallowed module.
-- Reports on `require()` calls with the same disallowed modules.
-
-Source: `src/rules/custom-rules/no-direct-memoize.js`
-
----
-
-## **src/rules/custom-rules/no-unsafe-window-open.js**
-
-Purpose: Custom lint rule that requires `noopener` in `window.open()` calls that open a new browsing context, preventing reverse tabnabbing through `window.opener`.
-
-Metadata from the rule (auto-extracted):
-
-- **Description**: Require 'noopener' in window.open() when the target opens a new browsing context
-- **Type**: problem
-- **Recommended**: true
-- **Messages**: `requireNoopener` — "Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."; `reviewOpenerAccess` — used when the call's returned window is consumed, since `noopener` would make it `null`.
-- **Options**: `includeNamedTargets` (boolean, default `false`)
-
-Behavior summary:
-
-- Reports on `CallExpression` nodes calling `open` on a window global (`window`, `globalThis`, `self`, `top`, `parent`, chains such as `window.top`, or a bare `open()`), using scope analysis so local or imported `open` bindings are ignored.
-- Treats a missing or empty target as `_blank`, ignores `_self`/`_parent`/`_top`, and ignores named targets unless `includeNamedTargets` is enabled.
-- Accepts `noopener` or `noreferrer` in the features argument, parsed with the browser's tokenizer (`=`, `,` and whitespace as separators) and boolean semantics (`noopener=no` is disabled).
-- Ignores arguments whose value is not statically known, to avoid false positives.
-- Switches to `reviewOpenerAccess` when the call's return value is consumed, so the rule never suggests adding `noopener` to a call that needs the returned window.
-
-Source: `src/rules/custom-rules/no-unsafe-window-open.js`
-
----
-
-How this file was generated
-
-This `RULES.md` was produced by extracting obvious descriptions, top-level settings, and JSDoc-like metadata from the rule/config source files. It is intended as a concise human-readable summary; for implementation details and exact rule shapes, refer to the original source files under `src/rules/`.
