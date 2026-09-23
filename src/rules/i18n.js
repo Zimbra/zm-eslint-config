@@ -33,7 +33,8 @@ export const i18nRules = {
 		'error',
 		{ ignoreTextRegex: '^(?:\\s*[()🚩.":<>\\-/]\\s*)*$' }
 	],
-	'preact-i18n/no-unknown-key': 'error'
+	'preact-i18n/no-unknown-key': 'error',
+	'preact-i18n/no-unsafe-template': 'error'
 };
 
 export const LANGUAGE_FILES_RELATIVE = [
