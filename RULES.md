@@ -1,6 +1,6 @@
 # RULES
 
-This file is generated from `src/rules/`, `src/rules/custom-rules/`, and `src/configs/`. It lists the rule modules and explains, in simple language, what each rule or setting does. Keep this file up to date when rules change.
+This file is generated from `src/rules/`, `src/plugin/`, and `src/configs/`. It lists the rule modules and explains, in simple language, what each rule or setting does. Keep this file up to date when rules change.
 
 ---
 
@@ -219,7 +219,7 @@ Source: `src/configs/sonarjs-config.js`
 
 ---
 
-## **src/rules/custom-rules/custom-rules.js**
+## **src/plugin/index.js**
 
 Purpose: The Zimbra custom ESLint plugin — bundles all project-specific rules (from `src/plugin/rules/`) under a single `custom/` namespace. `src/configs/custom-config.js` registers this plugin and enables each rule.
 
@@ -301,7 +301,7 @@ Source: `src/plugin/rules/require-icon-import-suffix.js`
 
 ---
 
-## **src/rules/custom-rules/no-unsafe-window-open.js**
+## **src/plugin/rules/no-unsafe-window-open.js**
 
 Purpose: A custom rule that requires `noopener` when `window.open()` opens a new browsing context.
 
@@ -340,4 +340,4 @@ window.open(url, '_blank', 'width=500,noopener=yes'); // ✅ allowed
 window.open(url, '_self'); // ✅ no new browsing context
 ```
 
-Source: `src/rules/custom-rules/no-unsafe-window-open.js`
+Source: `src/plugin/rules/no-unsafe-window-open.js`
