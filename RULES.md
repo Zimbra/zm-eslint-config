@@ -41,6 +41,7 @@ Rules and what they do:
 - `preact-i18n/no-text-as-attribute` — prevents raw text used directly in attributes instead of using translations.
 - `preact-i18n/no-text-as-children` — prevents raw text as children in i18n-aware components (ignores small punctuation-only strings).
 - `preact-i18n/no-unknown-key` — reports when a translation key used in code is not found in the locale files.
+- `preact-i18n/no-unsafe-template` — prevents unsafe use of template literals (with interpolations) in i18n template strings, ensuring translation content remains static and compatible with translation management systems.
 
 Notes:
 - Use `ESLINT_INTL_PATH` environment variable to change where locale files are read from.
@@ -183,6 +184,25 @@ Rules and what they do:
 Note: Projects that want stricter TypeScript rules should override these settings in their local config.
 
 Source: `src/rules/typescript.js`
+
+---
+
+## **src/configs/translation-json-config.js**
+
+Purpose: Lint JSON translation files to catch unsafe template patterns in i18n translation strings. This config applies the `preact-i18n` plugin with its JSON processor to detect and prevent template interpolation issues in translation files.
+
+How it works:
+
+- Targets JSON files (`**/*.json`) for linting.
+- Registers the `preact-i18n` plugin and enables its `translation-json` processor to pre-process and validate translation files.
+- Enables `preact-i18n/no-unsafe-template` rule to prevent unsafe use of template literals (with interpolations) in translation values, ensuring translation content remains static and compatible with translation management systems.
+
+Recommended usage:
+
+- Include `translationJsonConfig` in your flat ESLint config array to validate translation JSON files.
+- Place it alongside or after `localeJsonConfig` if both are used in your config, so all translation file checks are applied consistently.
+
+Source: `src/configs/translation-json-config.js`
 
 ---
 
@@ -341,3 +361,216 @@ window.open(url, '_self'); // ✅ no new browsing context
 ```
 
 Source: `src/plugin/rules/no-unsafe-window-open.js`
+
+---
+
+## **src/rules/automation.js**
+
+Purpose: Relax or adjust linting rules for automation and CI scripts. The automation rules turn off several stylistic and runtime checks that are commonly noisy in automation scripts and set a required semicolon style.
+
+Key settings (excerpt):
+
+- `prettier/prettier`: off
+- `prefer-const`: off
+- `require-atomic-updates`: off
+- `guard-for-in`: off
+- `semi`: ["error", "always"]
+
+Use when: applying lint rules to scripts used in CI, build tooling, or non-interactive environments where stricter runtime style checks may be unnecessary.
+
+Source: `src/rules/automation.js`
+
+---
+
+## **src/rules/i18n.js**
+
+Purpose: Provide i18n-related rules and configuration for both JSON locale files and Preact/Preact-i18n usage.
+
+What it contains:
+
+- `i18nJsonRules` — configuration for `eslint-plugin-i18n-json`, including a custom sort function (`scripts/intl/lint-custom-sort.cjs`) and reference to the primary language file (defaults to `src/intl/en_US.json` or overridden via `ESLINT_INTL_PATH`).
+- `i18nRules` — runtime/template checks for Preact i18n, including:
+  - `no-missing-template-field` — reports when a template expects a field that's not provided.
+  - `no-text-as-attribute` — prevents raw text used directly in attributes instead of using translations.
+  - `no-text-as-children` — prevents raw text as children in i18n-aware components (ignores small punctuation-only strings).
+  - `no-unknown-key` — reports when a translation key used in code is not found in the locale files.
+  - `no-unsafe-template` — prevents unsafe use of template literals (with interpolations) in i18n template strings, ensuring translation content remains static and compatible with translation management systems.
+- `LANGUAGE_FILES_RELATIVE` — a list of supported language filename mappings included for reference.
+- `i18nTextComponents` — helper patterns used to identify text-containing components for i18n checks.
+
+Notes:
+
+- `ESLINT_INTL_PATH` env var can override the default locale path.
+- Useful for projects that validate JSON locale files and enforce i18n usage in templates.
+
+Source: `src/rules/i18n.js`
+
+---
+
+## **src/rules/import.js**
+
+Purpose: Minimal adjustments for `eslint-plugin-import` rules in this config.
+
+Key settings (excerpt):
+
+- `import/no-unresolved`: off
+- `import/no-named-as-default`: off
+
+Source: `src/rules/import.js`
+
+---
+
+## **src/rules/parser.js**
+
+Purpose: Centralized parser configuration for TypeScript-aware parsing.
+
+Key settings:
+
+- `parser`: `@typescript-eslint/parser`
+- `sourceType`: `module`
+- `ecmaVersion`: `latest`
+- `parserOptions.requireConfigFile`: false
+- `parserOptions.ecmaFeatures.jsx`: true
+
+Use when: enabling TypeScript rules or type-aware linting blocks.
+
+Source: `src/rules/parser.js`
+
+---
+
+## **src/rules/prettier.js**
+
+Purpose: Prettier integration settings exposed as an ESLint rule block.
+
+Key settings (excerpt):
+
+- `prettier/prettier`: `error` with options: `singleQuote: true`, `printWidth: 100`, `trailingComma: 'none'`, `arrowParens: 'avoid'`.
+
+This file configures Prettier rules so that formatting errors are surfaced by ESLint and can be fixed with `eslint --fix` when `prettier` and `eslint-plugin-prettier` are present.
+
+Source: `src/rules/prettier.js`
+
+---
+
+## **src/rules/react-hooks.js**
+
+Purpose: Adjust React Hooks-related rules. This config disables certain rules from `eslint-plugin-react-hooks` that are not desired across Zimbra codebases.
+
+Key settings:
+
+- `react-hooks/refs`: off
+- `react-hooks/immutability`: off
+
+Source: `src/rules/react-hooks.js`
+
+---
+
+## **src/rules/react.js**
+
+Purpose: React-specific rule adjustments. The config turns off prop-types and other rules that are unnecessary in modern TypeScript/React codebases or in projects that use other type systems.
+
+Key settings (excerpt):
+
+- `react/prop-types`: off
+- `react/no-unknown-property`: off
+- `react/react-in-jsx-scope`: off
+- `react/jsx-key`: off
+- `react/no-danger`: error
+- `react/jsx-no-target-blank`: `['error', { allowReferrer: true, forms: true }]`
+
+Source: `src/rules/react.js`
+
+---
+
+## **src/rules/style.js**
+
+Purpose: Style and basic code-shape rules. Controls undefined variables, empty patterns, and unused variable behavior.
+
+Key settings (excerpt):
+
+- `no-undef`: off
+- `no-empty`: off
+- `no-unused-vars`: `['error',{vars:'all',args:'after-used',ignoreRestSiblings:true,caughtErrors:'none'}]`
+
+Source: `src/rules/style.js`
+
+---
+
+## **src/rules/typescript.js**
+
+Purpose: TypeScript-focused rule overrides using `@typescript-eslint` plugin.
+
+Key settings (excerpt):
+
+- `@typescript-eslint/no-explicit-any`: off
+- `@typescript-eslint/no-unused-vars`: off
+- `@typescript-eslint/no-empty-object-type`: off
+
+These relax certain strict checks which may otherwise be noisy across the codebase; enable stronger checks by overriding in a project's local config if desired.
+
+Source: `src/rules/typescript.js`
+
+---
+
+## **src/rules/custom-rules/custom-rules.js**
+
+Purpose: Enable custom rules defined in `src/rules/custom-rules/`.
+
+Key setting:
+
+- `custom/no-direct-memoize`: `error`
+- `custom/no-unsafe-window-open`: `error`
+
+This file acts as a small wrapper to enable Zimbra-specific custom rules.
+
+Source: `src/rules/custom-rules/custom-rules.js`
+
+---
+
+## **src/rules/custom-rules/no-direct-memoize.js**
+
+Purpose: Custom lint rule that disallows direct imports of `es-toolkit/compat/memoize` and `es-toolkit/memoize` and instructs developers to use `createLRUMemoize` instead.
+
+Metadata from the rule (auto-extracted):
+
+- **Description**: Disallow direct import of es-toolkit/compat/memoize or es-toolkit/memoize; use createLRUMemoize
+- **Type**: problem
+- **Recommended**: true
+- **Message**: "Do not import es-toolkit/compat/memoize or es-toolkit/memoize; directly. Use 'createLRUMemoize' instead."
+
+Behavior summary:
+
+- Reports on ES module `ImportDeclaration` nodes when the source matches any disallowed module.
+- Reports on `require()` calls with the same disallowed modules.
+
+Source: `src/rules/custom-rules/no-direct-memoize.js`
+
+---
+
+## **src/rules/custom-rules/no-unsafe-window-open.js**
+
+Purpose: Custom lint rule that requires `noopener` in `window.open()` calls that open a new browsing context, preventing reverse tabnabbing through `window.opener`.
+
+Metadata from the rule (auto-extracted):
+
+- **Description**: Require 'noopener' in window.open() when the target opens a new browsing context
+- **Type**: problem
+- **Recommended**: true
+- **Messages**: `requireNoopener` — "Security risk: open() with target '{{target}}' gives the opened page access to window.opener. Pass 'noopener' (or 'noreferrer') in the 3rd argument, e.g. 'noopener,noreferrer'."; `reviewOpenerAccess` — used when the call's returned window is consumed, since `noopener` would make it `null`.
+- **Options**: `includeNamedTargets` (boolean, default `false`)
+
+Behavior summary:
+
+- Reports on `CallExpression` nodes calling `open` on a window global (`window`, `globalThis`, `self`, `top`, `parent`, chains such as `window.top`, or a bare `open()`), using scope analysis so local or imported `open` bindings are ignored.
+- Treats a missing or empty target as `_blank`, ignores `_self`/`_parent`/`_top`, and ignores named targets unless `includeNamedTargets` is enabled.
+- Accepts `noopener` or `noreferrer` in the features argument, parsed with the browser's tokenizer (`=`, `,` and whitespace as separators) and boolean semantics (`noopener=no` is disabled).
+- Ignores arguments whose value is not statically known, to avoid false positives.
+- Switches to `reviewOpenerAccess` when the call's return value is consumed, so the rule never suggests adding `noopener` to a call that needs the returned window.
+
+Source: `src/rules/custom-rules/no-unsafe-window-open.js`
+
+---
+
+How this file was generated
+
+This `RULES.md` was produced by extracting obvious descriptions, top-level settings, and JSDoc-like metadata from the rule/config source files. It is intended as a concise human-readable summary; for implementation details and exact rule shapes, refer to the original source files under `src/rules/`.
