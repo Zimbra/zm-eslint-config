@@ -187,6 +187,25 @@ Source: `src/rules/typescript.js`
 
 ---
 
+## **src/configs/translation-json-config.js**
+
+Purpose: Lint JSON translation files to catch unsafe template patterns in i18n translation strings. This config applies the `preact-i18n` plugin with its JSON processor to detect and prevent template interpolation issues in translation files.
+
+How it works:
+
+- Targets JSON files (`**/*.json`) for linting.
+- Registers the `preact-i18n` plugin and enables its `translation-json` processor to pre-process and validate translation files.
+- Enables `preact-i18n/no-unsafe-template` rule to prevent unsafe use of template literals (with interpolations) in translation values, ensuring translation content remains static and compatible with translation management systems.
+
+Recommended usage:
+
+- Include `translationJsonConfig` in your flat ESLint config array to validate translation JSON files.
+- Place it alongside or after `localeJsonConfig` if both are used in your config, so all translation file checks are applied consistently.
+
+Source: `src/configs/translation-json-config.js`
+
+---
+
 ## **src/configs/sonarjs-config.js**
 
 Purpose: Enable SonarJS's recommended JavaScript and TypeScript quality checks while making the SonarJS config authoritative when it is placed after the base config blocks in a flat ESLint config array.

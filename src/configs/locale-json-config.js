@@ -1,5 +1,4 @@
 import pluginI18nJson from 'eslint-plugin-i18n-json';
-
 import { i18nJsonRules } from '../rules/i18n.js';
 
 export default {
