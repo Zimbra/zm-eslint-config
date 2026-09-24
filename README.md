@@ -127,14 +127,15 @@ Example React project with i18n support and locale JSON validation:
 
 ```js
 // eslint.config.mjs
-import { coreJsConfig, customConfig, reactConfig, preactI18nConfig, localeJsonConfig } from "@zimbra/eslint-config";
+import { coreJsConfig, customConfig, reactConfig, preactI18nConfig, localeJsonConfig, translationJsonConfig } from "@zimbra/eslint-config";
 
 export default [
   coreJsConfig,
   customConfig,
   reactConfig,
   preactI18nConfig,
-  ...localeJsonConfig,  // Note: localeJsonConfig is an array, so use the spread operator
+  localeJsonConfig,
+  translationJsonConfig,
   {
     files: ["**/*.jsx"],
     // local React overrides (if needed)
@@ -185,7 +186,7 @@ Notes:
 
 - Ensure your project has `type: "module"` in `package.json` or use the `.mjs` extension for the config file so Node treats it as ESM.
 - Install peer dependencies (`eslint`, `@typescript-eslint/*`, `prettier`) in the consumer project as described in the Installation section.
-- Most exported config blocks (`coreJsConfig`, `customConfig`, etc.) are objects that represent a single ESLint config block — add them directly to your config array without spreading. Exception: `localeJsonConfig` is an array of config blocks and must be spread (`...localeJsonConfig`) when adding to your config array.
+- Most exported config blocks (`coreJsConfig`, `customConfig`, etc.) are objects that represent a single ESLint config block — add them directly to your config array without spreading.
 
 ## **Exports & configs**
 
@@ -198,7 +199,8 @@ Notes:
 - **`preactI18nConfig`** — Preact i18n rules and configuration (requires `ESLINT_INTL_PATH` environment variable or defaults to `src/intl`).
 - **`prettierConfig`** — Prettier integration (formatting rules and conflict resolution).
 - **`automationConfig`** — Automation/TestCafe rules for test files.
-- **`localeJsonConfig`** — i18n JSON validation rules. *(Note: this is an array of config blocks; use spread operator when adding to your config: `...localeJsonConfig`)*
+- **`localeJsonConfig`** — i18n JSON validation rules for all JSON files.
+- **`translationJsonConfig`** — Preact i18n translation-specific JSON validation rules for translation files (`intl/`, `i18n/`, `translations/` directories).
 
 ### Additional exports
 
