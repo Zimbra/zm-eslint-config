@@ -78,7 +78,15 @@ export default {
 						// Build a readable suggestion:
 						// - if the imported name already ends with the suffix, prefer the bare form
 						// - otherwise suggest aliasing the imported name with the suffix appended
-						const imported = specifier.imported.name;
+						const imported = specifier.imported?.name ?? specifier.imported?.value ?? '';
+						if (!imported) {
+							context.report({
+								node: specifier,
+								messageId: 'missingSuffix',
+								data: { local, source, suggestion: `${local}${suffix}` }
+							});
+							continue;
+						}
 						const suggestion = imported.endsWith(suffix)
 							? imported
 							: `${imported} as ${imported}${suffix}`;
